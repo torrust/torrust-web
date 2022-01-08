@@ -6,12 +6,12 @@
         <tr>
           <th v-for="column in table_columns" :key="column" @click="changeSort(column)"
               class="cursor-pointer text-center hover:text-white"
-              :class="{ 'text-white': sort.name === column }"
+              :class="{ 'text-white': sorting.name === column }"
           >
             <div class="flex flex-row justify-start items-center" :class="{ 'justify-center': column!=='name' }">
               <span>{{ titleCase(column) }}</span>
-              <SortAscendingIcon size="16" v-if="sort.name===column&&sort.direction==='ASC'" class="ml-1" />
-              <SortDescendingIcon size="16" v-if="sort.name===column&&sort.direction==='DESC'" class="ml-1" />
+              <SortAscendingIcon size="16" v-if="sorting.name===column&&sorting.direction==='ASC'" class="ml-1" />
+              <SortDescendingIcon size="16" v-if="sorting.name===column&&sorting.direction==='DESC'" class="ml-1" />
             </div>
           </th>
           <th class="">Uploader</th>
@@ -57,6 +57,7 @@ export default {
   props: {
     torrents: Array,
     updateSorting: Function,
+    sorting: Object,
   },
   data: () => ({
     sort: {
@@ -73,17 +74,18 @@ export default {
   }),
   methods: {
     changeSort(sort) {
-      if (this.sort.name === sort) {
-        if (this.sort.direction === 'ASC') {
-          this.sort.direction = 'DESC'
+      let direction = 'ASC';
+      if (this.sorting.name === sort) {
+        if (this.sorting.direction === 'ASC') {
+          direction = 'DESC'
         } else {
-          this.sort.direction = 'ASC'
+          direction = 'ASC'
         }
       } else {
-        this.sort.name = sort;
-        this.sort.direction = 'DESC'
+        this.sorting.name = sort;
+        direction = 'DESC'
       }
-      this.updateSorting(this.sort);
+      this.updateSorting({name: sort, direction});
       //this.$emit('update:sorting', sort);
     }
   }

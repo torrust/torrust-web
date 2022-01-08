@@ -5,6 +5,7 @@ import TorrentUpload from "@/views/TorrentUpload";
 import VueRouter from "vue-router";
 import Torrents from "@/views/Torrents";
 import Welcome from "@/views/Welcome";
+import Settings from "@/views/Settings";
 
 const routes = [
     {
@@ -16,6 +17,11 @@ const routes = [
                 path: '/',
                 name: 'Welcome',
                 component: Welcome,
+            },
+            {
+                path: 'settings',
+                name: 'Settings',
+                component: Settings,
             },
             {
                 path: 'categories',

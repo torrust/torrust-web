@@ -27,7 +27,7 @@
       <router-link :to="`/torrents`" class="mt-2 w-full flex items-center h-10 pl-4 rounded-lg cursor-pointer" exact-active-class="text-white bg-secondary">
         <span>Browse Torrents</span>
       </router-link>
-      <ul id="category-filters" class="mt-2">
+      <ul v-if="$route.name === 'TorrentList'" id="category-filters" class="p-4 mt-2 bg-secondary rounded-xl">
         <h3 class="py-2">Categories</h3>
         <li v-for="category in categories"
             @click="selectFilter(category.name)"

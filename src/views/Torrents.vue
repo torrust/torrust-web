@@ -8,7 +8,7 @@
       <h1 class="view-title text-white">Browse Torrents</h1>
     </div>
     <router-view/>
-    <TorrentList v-if="torrents.results.length > 0" :torrents="torrents.results" :update-sorting="updateSorting"/>
+    <TorrentList v-if="torrents.results.length > 0" :torrents="torrents.results" :sorting="sorting" :update-sorting="updateSorting"/>
     <Pagination v-if="torrents.results.length > 0" :current-page.sync="currentPage" :total-pages="totalPages" :total-results="torrents.total" :page-size="pageSize" />
     <div v-else class="py-6 text-gray-300">This category has no results.</div>
   </div>
@@ -43,6 +43,23 @@ export default {
       }).catch(() => {
       });
     },
+    updateSortFromRoute() {
+      if (this.$route.params.sorting) {
+        let sort = this.$route.params.sorting;
+        switch (sort) {
+          case 'popular':
+            this.sorting.name = 'seeders';
+            this.sorting.direction = 'DESC';
+            break;
+          case 'recent':
+            this.sorting.name = 'uploaded';
+            this.sorting.direction = 'DESC';
+            break;
+          default:
+            this.sorting.name = sort;
+        }
+      }
+    },
     clearSearch() {
       this.$router.replace({ query: {...this.$route.query, search: ''}})
     },
@@ -63,6 +80,10 @@ export default {
       search ? this.search = search : this.search = '';
       this.loadTorrents(this.currentPage, this.sorting);
     },
+    '$route.params.sorting': function () {
+      this.updateSortFromRoute();
+      this.loadTorrents(this.currentPage, this.sorting);
+    },
     filters() {
       this.loadTorrents(this.currentPage, this.sorting);
     },
@@ -75,6 +96,7 @@ export default {
   },
   mounted() {
     this.$route.query.search ? this.search = this.$route.query.search : this.search = '';
+    this.updateSortFromRoute();
     this.loadTorrents(this.currentPage, this.sorting);
   }
 }

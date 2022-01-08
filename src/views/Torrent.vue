@@ -10,6 +10,18 @@
             <XIcon />
           </a>
         </div>
+
+        <div v-if="isAdmin" class="pb-5">
+          <button type="button" @click="deleteTorrent"
+                  class="text-white bg-red-600 border-transparent shadow-sm button hover:bg-red-500">
+            Delete torrent
+          </button>
+          <button type="button"
+                  class="ml-2 text-white bg-blue-600 border-transparent shadow-sm button hover:bg-blue-500">
+            Edit description
+          </button>
+        </div>
+
         <div class="p-4 bg-primary text-gray-300 rounded-3xl flex flex-col lg:flex-row justify-center items-center w-full overflow-auto">
           <div class="mb-4 lg:mb-0 flex flex-row">
             <div class="px-2 text-gray-300 text-sm">Seeders: <span class="text-green-500">{{ torrent.seeders }}</span></div>
@@ -48,7 +60,7 @@
 import MarkdownIt from 'markdown-it';
 import {XIcon, DownloadIcon} from "@vue-hero-icons/outline";
 import HttpService from "@/common/http-service";
-
+import Vue from "vue";
 
 export default {
   name: "TorrentDetail",
@@ -98,6 +110,19 @@ export default {
         self.closeModal();
       })
     },
+    deleteTorrent() {
+      const self = this;
+      HttpService.delete(`/torrent/${this.torrent.torrent_id}`, () => {
+        Vue.notify({
+          title: 'Deleted',
+          text: 'Torrent deleted successfully.',
+          type: 'success',
+        })
+        self.closeModal();
+      }).catch(() => {
+        self.closeModal();
+      })
+    },
     downloadTorrent() {
       HttpService.getBlob(`/torrents/download/${this.torrent.torrent_id}`, (res) => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -110,6 +135,9 @@ export default {
     }
   },
   computed: {
+    isAdmin() {
+      return this.$store.getters.isAdministrator;
+    },
     torrentId() {
       return this.$route.params.torrentId;
     },

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import authStore from './auth';
+import HttpService from "@/common/http-service";
 
 Vue.use(Vuex)
 
@@ -38,6 +39,11 @@ export default new Vuex.Store({
         toggleSidebar({commit}) {
             commit('toggleSidebar')
         },
+        getCategories({commit}) {
+            HttpService.get('/category', (res) => {
+                commit('setCategories', res.data.data);
+            }).catch(() => {});
+        }
     },
     modules: {
         auth: authStore
